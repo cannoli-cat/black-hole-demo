@@ -2,7 +2,7 @@
 
 A real-time, physically based black hole running in your browser: Kerr ray tracing, a relativistic accretion disk, the hot flow seen by the Event Horizon Telescope, relativistic jets, and a camera you can fly into the horizon.
 
-### [▶ Try it live](https://cannoli-cat.github.io/black-hole-demo/)
+### [Try it live](https://cannoli-cat.github.io/black-hole-demo/)
 
 <table>
   <tr>
