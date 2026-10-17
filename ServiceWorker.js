@@ -1,33 +1,13 @@
-const cacheName = "DefaultCompany-PostProcessingPlayground-0.1.0";
-const contentToCache = [
-    "Build/black-hole-demo.loader.js",
-    "Build/black-hole-demo.framework.js.unityweb",
-    "Build/black-hole-demo.data.unityweb",
-    "Build/black-hole-demo.wasm.unityweb",
-    "TemplateData/style.css"
-
-];
-
-self.addEventListener('install', function (e) {
-    console.log('[Service Worker] Install');
-    
-    e.waitUntil((async function () {
-      const cache = await caches.open(cacheName);
-      console.log('[Service Worker] Caching all: app shell and content');
-      await cache.addAll(contentToCache);
-    })());
+self.addEventListener('install', function () {
+    self.skipWaiting();
 });
 
-self.addEventListener('fetch', function (e) {
-    e.respondWith((async function () {
-      let response = await caches.match(e.request);
-      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      if (response) { return response; }
-
-      response = await fetch(e.request);
-      const cache = await caches.open(cacheName);
-      console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
-      cache.put(e.request, response.clone());
-      return response;
+self.addEventListener('activate', function (e) {
+    e.waitUntil((async function () {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(function (key) { return caches.delete(key); }));
+        await self.registration.unregister();
+        const clients = await self.clients.matchAll({ type: 'window' });
+        clients.forEach(function (client) { client.navigate(client.url); });
     })());
 });
